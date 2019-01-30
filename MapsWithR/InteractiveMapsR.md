@@ -39,7 +39,7 @@ Exercise 1
 
 Mapview [Article 1](https://r-spatial.github.io/mapview/articles/articles/mapview_01-basics.html)
 
-Note: the backgrounds may not show up in Rstudio, but if you open the file in a web browser (upper right corner of the RStudio preview window) it will.
+*Note:* the backgrounds may not show up in Rstudio, but if you open the file in a web browser (upper right corner of the RStudio preview window) it will.
 
 Exercise 2
 ----------
@@ -50,7 +50,7 @@ Mapview [Article 2](https://r-spatial.github.io/mapview/articles/articles/mapvie
 
 If you want to use a different Basemap (Background Map), [here's a list of easy to use maps](http://leaflet-extras.github.io/leaflet-providers/preview/index.html). You can use any other XYZ tile services, read the [documentation on addTiles](https://www.rdocumentation.org/packages/leaflet/versions/2.0.2/topics/addControl) for various options.
 
-*Note* Some tiles source(e.g. Google), require that you have an api key to use their basemaps.
+*Note*: Some tiles source (e.g. Google), require that you have an api key to use their basemaps.
 
 Other Tips
 ----------
@@ -92,6 +92,41 @@ l3 = addStaticLabels(m3,
                      label = franconia$NAME_ASCI,
                      labelOptions = lopt)
 l3
+```
+
+### Colors and Legends
+
+Depending on the data type (raster, vector, etc) being plotted, colors can be modified using either a name or [hexcode](https://htmlcolorcodes.com/).
+
+``` r
+mapview(franconia, 
+        color="gray", # some colors work as color
+        col.regions="#008080") # more refined
+```
+
+We can also assign a color palette based on the data:
+
+``` r
+# assign color based on variable name in data:
+(zcol_map1 <- mapview(franconia, zcol="district"))
+
+# assign color but change the NA value and legend title
+mapview(breweries, zcol="number.of.types", na.color="transparent",
+        layer.name="Number of Beer Types <br> at Each Brewery")
+
+# manipulate some data to plot on top:
+library(dplyr)
+smallbrews <- breweries %>% filter(number.of.types<2) # only make 1 beer!
+manybrews <- breweries %>% filter(number.of.types>8) # make more than 8 kinds of beer!
+
+# and layer with beer data:
+zcol_map1 + 
+  mapview(smallbrews, color="white", col.regions="black",
+        na.color="transparent", 
+        layer.name="Single Beer Breweries") +
+  mapview(manybrews, color="white", col.regions="maroon",
+          na.color="transparent", 
+          layer.name="Multi Beer Breweries")
 ```
 
 ### Scale Bar
